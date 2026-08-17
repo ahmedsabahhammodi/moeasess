@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة المؤسسين - التقارير المالية</title>
+    <meta name="description" content="بوابة المؤسسين للاطلاع على التقارير المالية وكشف الصندوق">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏫</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a56db;
+            --primary-light: #e8eefb;
+            --success: #059669;
+            --success-light: #d1fae5;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-700: #374151;
+            --gray-900: #111827;
+            --radius: 12px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-900);
+            min-height: 100vh;
+        }
+
+        /* ===== صفحة تسجيل الدخول ===== */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3a5f 0%, #1a56db 100%);
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 32px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        }
+
+        .login-card h1 {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--gray-900);
+        }
+
+        .login-card .subtitle {
+            text-align: center;
+            color: var(--gray-500);
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        .login-icon {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            transition: border-color 0.2s;
+            direction: ltr;
+            text-align: right;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover { background: #1648b8; }
+        .btn-primary:disabled { background: var(--gray-300); cursor: not-allowed; }
+
+        .login-error {
+            background: var(--danger-light);
+            color: var(--danger);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        /* ===== لوحة التقارير ===== */
+        .app-container { display: none; }
+
+        .app-header {
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .app-header h1 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .school-name-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: none;
+            border: 1px solid var(--gray-200);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            color: var(--gray-500);
+        }
+
+        .btn-logout:hover { background: var(--gray-100); }
+
+        /* التبويبات */
+        .tabs {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid var(--gray-200);
+            padding: 0 16px;
+            gap: 4px;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 12px 20px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-500);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab:hover { color: var(--primary); }
+
+        .tab-content { display: none; padding: 16px; max-width: 1100px; margin: 0 auto; }
+        .tab-content.active { display: block; }
+
+        /* بطاقات الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-bottom: 4px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--gray-900);
+        }
+
+        .stat-card .stat-value.income { color: var(--success); }
+        .stat-card .stat-value.expense { color: var(--danger); }
+        .stat-card .stat-value.balance { color: var(--primary); }
+
+        /* الجداول */
+        .table-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .table-card .card-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--gray-200);
+            font-weight: 700;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-wrapper { overflow-x: auto; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background: var(--gray-50);
+            padding: 10px 12px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--gray-700);
+            border-bottom: 1px solid var(--gray-200);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        tr:hover td { background: var(--gray-50); }
+
+        .badge {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .badge-income { background: var(--success-light); color: var(--success); }
+        .badge-expense { background: var(--danger-light); color: var(--danger); }
+        .badge-warning { background: var(--warning-light); color: var(--warning); }
+
+        /* فلتر التاريخ */
+        .filter-bar {
+            background: white;
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar input, .filter-bar select {
+            padding: 8px 12px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+        }
+
+        .filter-bar .btn-filter {
+            padding: 8px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .sync-info {
+            text-align: center;
+            padding: 8px;
+            font-size: 11px;
+            color: var(--gray-500);
+            background: var(--gray-100);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray-500);
+        }
+
+        .loading .spinner {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--gray-200);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 10px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .amount { direction: ltr; text-align: right; font-weight: 600; }
+
+        .net-positive { color: var(--success); }
+        .net-negative { color: var(--danger); }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .year-selector {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .year-selector select {
+            padding: 8px 16px;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .login-card { padding: 28px 20px; }
+            .app-header { flex-wrap: wrap; gap: 8px; }
+            .filter-bar { flex-direction: column; }
+            .filter-bar input, .filter-bar select { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== صفحة تسجيل الدخول ===== -->
+<div class="login-container" id="loginPage">
+    <div class="login-card">
+        <div class="login-icon">🏫</div>
+        <h1>بوابة المؤسسين</h1>
+        <p class="subtitle">التقارير المالية وكشف الصندوق</p>
+
+        <div class="login-error" id="loginError"></div>
+
+        <div class="form-group">
+            <label>كود المدرسة</label>
+            <input type="text" id="schoolCode" placeholder="مثال: SCH-D2A5A037" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label>اسم المستخدم</label>
+            <input type="text" id="username" placeholder="اسم المستخدم" autocomplete="off">
+        </div>
+        <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="password" placeholder="كلمة المرور">
+        </div>
+        <button class="btn btn-primary" id="loginBtn" onclick="doLogin()">تسجيل الدخول</button>
+    </div>
+</div>
+
+<!-- ===== لوحة التقارير ===== -->
+<div class="app-container" id="appPage">
+    <header class="app-header">
+        <h1>📊 بوابة المؤسسين</h1>
+        <span class="school-name-badge" id="schoolNameBadge"></span>
+        <button class="btn-logout" onclick="doLogout()">تسجيل خروج</button>
+    </header>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('financial')">📈 التقارير المالية</button>
+        <button class="tab" onclick="switchTab('cashbox')">🏦 كشف الصندوق</button>
+    </div>
+
+    <!-- تبويب التقارير المالية -->
+    <div class="tab-content active" id="tab-financial">
+        <div class="year-selector">
+            <label style="font-weight:600">السنة:</label>
+            <select id="yearSelect" onchange="loadFinancialData()"></select>
+        </div>
+
+        <div id="financialLoading" class="loading">
+            <div class="spinner"></div>
+            <div>جاري تحميل التقارير...</div>
+        </div>
+
+        <div id="financialContent" style="display:none">
+            <!-- إحصائيات عامة -->
+            <div class="stats-grid" id="financialStats"></div>
+
+            <!-- التفصيل الشهري -->
+            <div class="table-card">
+                <div class="card-header">📅 التفصيل الشهري</div>
+                <div class="table-wrapper">
+                    <table id="monthlyTable">
+                        <thead>
+                            <tr>
+                                <th>الشهر</th>
+                                <th>الإيرادات</th>
+                                <th>الرواتب</th>
+                                <th>المصروفات</th>
+                                <th>الصافي</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- تفصيل خطط الدفع -->
+            <div class="table-card">
+                <div class="card-header">
+                    <span>💳 حالة خطط الدفع</span>
+                    <span id="plansCount" style="font-size:12px;color:var(--gray-500)"></span>
+                </div>
+                <div class="table-wrapper">
+                    <table id="plansTable">
+                        <thead>
+                            <tr>
+                                <th>الحالة</th>
+                                <th>عدد الطلاب</th>
+                                <th>المبلغ المطلوب</th>
+                                <th>المبلغ المدفوع</th>
+                                <th>المتبقي</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- تبويب كشف الصندوق -->
+    <div class="tab-content" id="tab-cashbox">
+        <div class="filter-bar">
+            <label style="font-weight:600">من:</label>
+            <input type="date" id="cashStartDate">
+            <label style="font-weight:600">إلى:</label>
+            <input type="date" id="cashEndDate">
+            <button class="btn-filter" onclick="loadCashBox()">بحث</button>
+        </div>
+
+        <div id="cashboxLoading" class="loading">
+            <div class="spinner"></div>
+            <div>جاري تحميل كشف الصندوق...</div>
+        </div>
+
+        <div id="cashboxContent" style="display:none">
+            <div class="stats-grid" id="cashboxStats"></div>
+
+            <!-- التقرير اليومي -->
+            <div class="table-card">
+                <div class="card-header">📅 التقرير اليومي</div>
+                <div class="table-wrapper">
+                    <table id="dailyTable">
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>الدخل</th>
+                                <th>الصرف</th>
+                                <th>الصافي</th>
+                                <th>عدد الحركات</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- الحركات التفصيلية -->
+            <div class="table-card">
+                <div class="card-header">
+                    <span>📋 الحركات التفصيلية</span>
+                    <span id="txCount" style="font-size:12px;color:var(--gray-500)"></span>
+                </div>
+                <div class="table-wrapper">
+                    <table id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>النوع</th>
+                                <th>المصدر</th>
+                                <th>الوصف</th>
+                                <th>المبلغ</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sync-info" id="syncInfo"></div>
+</div>
+
+<script>
+// ===== الإعدادات =====
+const SUPABASE_URL = 'https://lejdrjcuzktfkjjufaat.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_qQi6y-oJ_Wc2uhWDy5lzCA_zbPW2YJH';
+
+let currentSchoolCode = '';
+let currentSchoolName = '';
+
+// ===== دوال مساعدة =====
+function formatNumber(n) {
+    if (n === null || n === undefined) return '0';
+    return Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+function formatDate(d) {
+    if (!d) return '-';
+    const date = new Date(d);
+    return date.toLocaleDateString('ar-IQ', { year: 'numeric', month: '2-digit', day: '2-digit' });
+}
+
+async function supabaseQuery(table, params = '') {
+    const url = `${SUPABASE_URL}/rest/v1/${table}?${params}`;
+    const res = await fetch(url, {
+        headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json'
+        }
+    });
+    if (!res.ok) throw new Error(`خطأ في جلب البيانات: ${res.status}`);
+    return res.json();
+}
+
+async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+const MONTH_NAMES = ['', 'يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو',
+    'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+
+const SOURCE_LABELS = {
+    'installment_payment': 'قسط',
+    'down_payment': 'دفعة أولى',
+    'activation_payment': 'اشتراك',
+    'salary_payment': 'راتب',
+    'expense_payment': 'مصروف',
+    'settlement_refund': 'استرداد',
+    'manual_income': 'إيداع يدوي',
+    'manual_expense': 'صرف يدوي'
+};
+
+// ===== تسجيل الدخول =====
+async function doLogin() {
+    const schoolCode = document.getElementById('schoolCode').value.trim().toUpperCase();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+    const errorEl = document.getElementById('loginError');
+    const btn = document.getElementById('loginBtn');
+
+    if (!schoolCode || !username || !password) {
+        errorEl.textContent = 'يرجى ملء جميع الحقول';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'جاري التحقق...';
+    errorEl.style.display = 'none';
+
+    try {
+        const hash = await sha256(password);
+        const founders = await supabaseQuery('founders_auth',
+            `school_code=eq.${encodeURIComponent(schoolCode)}&username=eq.${encodeURIComponent(username)}&password_hash=eq.${hash}&is_active=eq.true`
+        );
+
+        if (!founders || founders.length === 0) {
+            errorEl.textContent = 'بيانات الدخول غير صحيحة أو الحساب معطل';
+            errorEl.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'تسجيل الدخول';
+            return;
+        }
+
+        // جلب اسم المدرسة
+        const schools = await supabaseQuery('schools_registry',
+            `school_code=eq.${encodeURIComponent(schoolCode)}`
+        );
+
+        currentSchoolCode = schoolCode;
+        currentSchoolName = schools.length > 0 ? schools[0].school_name : schoolCode;
+
+        // حفظ الجلسة
+        sessionStorage.setItem('founders_session', JSON.stringify({
+            schoolCode, schoolName: currentSchoolName,
+            founderName: founders[0].full_name || username,
+            loginAt: Date.now()
+        }));
+
+        showApp();
+    } catch (err) {
+        errorEl.textContent = 'خطأ في الاتصال بالخادم. حاول مرة أخرى.';
+        errorEl.style.display = 'block';
+        console.error(err);
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'تسجيل الدخول';
+}
+
+function doLogout() {
+    sessionStorage.removeItem('founders_session');
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('appPage').style.display = 'none';
+    document.getElementById('password').value = '';
+}
+
+function showApp() {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('appPage').style.display = 'block';
+    document.getElementById('schoolNameBadge').textContent = currentSchoolName;
+
+    // تعبئة قائمة السنوات
+    const yearSelect = document.getElementById('yearSelect');
+    yearSelect.innerHTML = '';
+    const currentYear = new Date().getFullYear();
+    for (let y = currentYear; y >= currentYear - 3; y--) {
+        yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+    }
+
+    // تواريخ كشف الصندوق (آخر 30 يوم)
+    const today = new Date();
+    const monthAgo = new Date(today);
+    monthAgo.setDate(monthAgo.getDate() - 30);
+    document.getElementById('cashEndDate').value = today.toISOString().split('T')[0];
+    document.getElementById('cashStartDate').value = monthAgo.toISOString().split('T')[0];
+
+    loadFinancialData();
+    loadSyncInfo();
+}
+
+// ===== التبويبات =====
+function switchTab(tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    document.getElementById('tab-' + tabName).classList.add('active');
+
+    if (tabName === 'cashbox') loadCashBox();
+}
+
+// ===== تحميل التقارير المالية =====
+async function loadFinancialData() {
+    const year = document.getElementById('yearSelect').value;
+    document.getElementById('financialLoading').style.display = 'block';
+    document.getElementById('financialContent').style.display = 'none';
+
+    try {
+        const sc = encodeURIComponent(currentSchoolCode);
+
+        // جلب كل البيانات
+        const [plans, installments, activations, expenses, salaries, students] = await Promise.all([
+            supabaseQuery('student_payment_plans', `school_code=eq.${sc}&select=*`),
+            supabaseQuery('student_installments', `school_code=eq.${sc}&select=*`),
+            supabaseQuery('monthly_activations', `school_code=eq.${sc}&deleted_at=is.null&select=*`),
+            supabaseQuery('expenses', `school_code=eq.${sc}&select=*`),
+            supabaseQuery('teacher_salaries', `school_code=eq.${sc}&year=eq.${year}&is_cancelled=eq.false&select=*`),
+            supabaseQuery('students', `school_code=eq.${sc}&select=local_id`)
+        ]);
+
+        // حساب الإحصائيات
+        const totalStudents = students.length;
+        const totalExpected = plans.reduce((s, p) => s + Number(p.total_amount_due || 0), 0);
+        const totalPaid = plans.reduce((s, p) => s + Number(p.total_paid_so_far || 0), 0);
+        const totalRemaining = totalExpected - totalPaid;
+        const fullyPaid = plans.filter(p => p.status === 'fully_paid').length;
+        const activePlans = plans.filter(p => ['active', 'overdue_installments'].includes(p.status)).length;
+        const withdrawn = plans.filter(p => p.is_withdrawn).length;
+
+        const activationsTotal = activations.reduce((s, a) => s + Number(a.amount_paid || 0), 0);
+        const totalSalaries = salaries.reduce((s, t) => s + Number(t.final_amount_paid || 0), 0);
+
+        const yearExpenses = expenses.filter(e => {
+            const d = new Date(e.expense_date);
+            return d.getFullYear() == year;
+        });
+        const totalExpenses = yearExpenses.reduce((s, e) => s + Number(e.amount || 0), 0);
+
+        const totalRevenue = totalPaid + activationsTotal;
+        const totalCosts = totalSalaries + totalExpenses;
+        const netProfit = totalRevenue - totalCosts;
+
+        // عرض الإحصائيات
+        document.getElementById('financialStats').innerHTML = `
+            <div class="stat-card">
+                <div class="stat-label">👨‍🎓 عدد الطلاب</div>
+                <div class="stat-value">${formatNumber(totalStudents)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">💰 المبلغ المطلوب</div>
+                <div class="stat-value">${formatNumber(totalExpected)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">✅ المبلغ المحصّل</div>
+                <div class="stat-value income">${formatNumber(totalRevenue)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">⏳ المبلغ المتبقي</div>
+                <div class="stat-value expense">${formatNumber(totalRemaining)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">👨‍🏫 إجمالي الرواتب</div>
+                <div class="stat-value expense">${formatNumber(totalSalaries)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">📝 إجمالي المصروفات</div>
+                <div class="stat-value expense">${formatNumber(totalExpenses)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">📊 صافي الربح</div>
+                <div class="stat-value ${netProfit >= 0 ? 'income' : 'expense'}">${formatNumber(netProfit)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">🔄 المنسحبون</div>
+                <div class="stat-value">${formatNumber(withdrawn)}</div>
+            </div>
+        `;
+
+        // التفصيل الشهري
+        const monthlyData = {};
+        for (let m = 1; m <= 12; m++) monthlyData[m] = { revenue: 0, salaries: 0, expenses: 0 };
+
+        // إيرادات الأقساط
+        installments.filter(i => {
+            const d = new Date(i.payment_date);
+            return d.getFullYear() == year && ['paid', 'partially_paid'].includes(i.status);
+        }).forEach(i => {
+            const m = new Date(i.payment_date).getMonth() + 1;
+            monthlyData[m].revenue += Number(i.amount_paid || 0);
+        });
+
+        // إيرادات الاشتراكات
+        activations.filter(a => {
+            const d = new Date(a.activation_date);
+            return d.getFullYear() == year;
+        }).forEach(a => {
+            const m = new Date(a.activation_date).getMonth() + 1;
+            monthlyData[m].revenue += Number(a.amount_paid || 0);
+        });
+
+        // الرواتب
+        salaries.forEach(s => { monthlyData[s.month].salaries += Number(s.final_amount_paid || 0); });
+
+        // المصروفات
+        yearExpenses.forEach(e => {
+            const m = new Date(e.expense_date).getMonth() + 1;
+            monthlyData[m].expenses += Number(e.amount || 0);
+        });
+
+        const monthlyBody = document.querySelector('#monthlyTable tbody');
+        monthlyBody.innerHTML = '';
+        for (let m = 1; m <= 12; m++) {
+            const d = monthlyData[m];
+            if (d.revenue === 0 && d.salaries === 0 && d.expenses === 0) continue;
+            const net = d.revenue - d.salaries - d.expenses;
+            monthlyBody.innerHTML += `
+                <tr>
+                    <td><strong>${MONTH_NAMES[m]}</strong></td>
+                    <td class="amount income">${formatNumber(d.revenue)}</td>
+                    <td class="amount expense">${formatNumber(d.salaries)}</td>
+                    <td class="amount expense">${formatNumber(d.expenses)}</td>
+                    <td class="amount ${net >= 0 ? 'net-positive' : 'net-negative'}">${formatNumber(net)}</td>
+                </tr>
+            `;
+        }
+
+        // حالة خطط الدفع
+        const statusGroups = {};
+        const statusLabels = {
+            'fully_paid': 'مسدد بالكامل',
+            'active': 'نشط (يدفع)',
+            'overdue_installments': 'متأخر',
+            'pending_setup': 'بانتظار الإعداد',
+            'defaulted': 'متعثر'
+        };
+
+        plans.forEach(p => {
+            const key = p.status || 'unknown';
+            if (!statusGroups[key]) statusGroups[key] = { count: 0, due: 0, paid: 0 };
+            statusGroups[key].count++;
+            statusGroups[key].due += Number(p.total_amount_due || 0);
+            statusGroups[key].paid += Number(p.total_paid_so_far || 0);
+        });
+
+        const plansBody = document.querySelector('#plansTable tbody');
+        plansBody.innerHTML = '';
+        Object.entries(statusGroups).forEach(([status, data]) => {
+            plansBody.innerHTML += `
+                <tr>
+                    <td><span class="badge ${status === 'fully_paid' ? 'badge-income' : status.includes('overdue') ? 'badge-expense' : 'badge-warning'}">${statusLabels[status] || status}</span></td>
+                    <td>${data.count}</td>
+                    <td class="amount">${formatNumber(data.due)}</td>
+                    <td class="amount income">${formatNumber(data.paid)}</td>
+                    <td class="amount expense">${formatNumber(data.due - data.paid)}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('plansCount').textContent = `${plans.length} خطة`;
+
+    } catch (err) {
+        console.error('خطأ تحميل التقارير:', err);
+        document.getElementById('financialStats').innerHTML =
+            `<div style="padding:20px;color:var(--danger)">خطأ في تحميل البيانات: ${err.message}</div>`;
+    }
+
+    document.getElementById('financialLoading').style.display = 'none';
+    document.getElementById('financialContent').style.display = 'block';
+}
+
+// ===== تحميل كشف الصندوق =====
+async function loadCashBox() {
+    const startDate = document.getElementById('cashStartDate').value;
+    const endDate = document.getElementById('cashEndDate').value;
+
+    document.getElementById('cashboxLoading').style.display = 'block';
+    document.getElementById('cashboxContent').style.display = 'none';
+
+    try {
+        const sc = encodeURIComponent(currentSchoolCode);
+        let dateFilter = '';
+        if (startDate) dateFilter += `&transaction_date=gte.${startDate}`;
+        if (endDate) dateFilter += `&transaction_date=lte.${endDate}T23:59:59`;
+
+        const transactions = await supabaseQuery('cash_box_transactions',
+            `school_code=eq.${sc}${dateFilter}&order=transaction_date.desc,local_id.desc&limit=500`
+        );
+
+        // حساب الملخص
+        let totalIncome = 0, totalExpense = 0, incomeCount = 0, expenseCount = 0;
+        transactions.forEach(t => {
+            if (t.transaction_type === 'income') {
+                totalIncome += Number(t.amount || 0);
+                incomeCount++;
+            } else {
+                totalExpense += Number(t.amount || 0);
+                expenseCount++;
+            }
+        });
+
+        const balance = totalIncome - totalExpense;
+
+        document.getElementById('cashboxStats').innerHTML = `
+            <div class="stat-card">
+                <div class="stat-label">📥 إجمالي الدخل</div>
+                <div class="stat-value income">${formatNumber(totalIncome)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">📤 إجمالي الصرف</div>
+                <div class="stat-value expense">${formatNumber(totalExpense)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">💰 الرصيد</div>
+                <div class="stat-value ${balance >= 0 ? 'income' : 'expense'}">${formatNumber(balance)}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">📊 عدد الحركات</div>
+                <div class="stat-value">${formatNumber(transactions.length)}</div>
+            </div>
+        `;
+
+        // التقرير اليومي
+        const dailyMap = {};
+        transactions.forEach(t => {
+            const day = t.transaction_date ? t.transaction_date.split('T')[0] : 'غير محدد';
+            if (!dailyMap[day]) dailyMap[day] = { income: 0, expense: 0, count: 0 };
+            if (t.transaction_type === 'income') dailyMap[day].income += Number(t.amount || 0);
+            else dailyMap[day].expense += Number(t.amount || 0);
+            dailyMap[day].count++;
+        });
+
+        const dailyBody = document.querySelector('#dailyTable tbody');
+        dailyBody.innerHTML = '';
+        Object.entries(dailyMap).sort((a, b) => b[0].localeCompare(a[0])).forEach(([date, d]) => {
+            const net = d.income - d.expense;
+            dailyBody.innerHTML += `
+                <tr>
+                    <td>${formatDate(date)}</td>
+                    <td class="amount income">${formatNumber(d.income)}</td>
+                    <td class="amount expense">${formatNumber(d.expense)}</td>
+                    <td class="amount ${net >= 0 ? 'net-positive' : 'net-negative'}">${formatNumber(net)}</td>
+                    <td>${d.count}</td>
+                </tr>
+            `;
+        });
+
+        // الحركات التفصيلية
+        const txBody = document.querySelector('#transactionsTable tbody');
+        txBody.innerHTML = '';
+        transactions.forEach(t => {
+            const typeLabel = t.transaction_type === 'income' ? 'دخل' : 'صرف';
+            const typeBadge = t.transaction_type === 'income' ? 'badge-income' : 'badge-expense';
+            txBody.innerHTML += `
+                <tr>
+                    <td style="white-space:nowrap">${formatDate(t.transaction_date)}</td>
+                    <td><span class="badge ${typeBadge}">${typeLabel}</span></td>
+                    <td>${SOURCE_LABELS[t.source_type] || t.source_type || '-'}</td>
+                    <td>${t.description || '-'}${t.student_name ? ' - ' + t.student_name : ''}</td>
+                    <td class="amount ${t.transaction_type === 'income' ? 'income' : 'expense'}">${formatNumber(t.amount)}</td>
+                </tr>
+            `;
+        });
+
+        document.getElementById('txCount').textContent = `${transactions.length} حركة`;
+
+    } catch (err) {
+        console.error('خطأ تحميل كشف الصندوق:', err);
+        document.getElementById('cashboxStats').innerHTML =
+            `<div style="padding:20px;color:var(--danger)">خطأ في تحميل البيانات: ${err.message}</div>`;
+    }
+
+    document.getElementById('cashboxLoading').style.display = 'none';
+    document.getElementById('cashboxContent').style.display = 'block';
+}
+
+// ===== معلومات المزامنة =====
+async function loadSyncInfo() {
+    try {
+        const schools = await supabaseQuery('schools_registry',
+            `school_code=eq.${encodeURIComponent(currentSchoolCode)}`
+        );
+        if (schools.length > 0 && schools[0].last_sync_at) {
+            const syncDate = new Date(schools[0].last_sync_at);
+            document.getElementById('syncInfo').textContent =
+                `آخر تحديث للبيانات: ${syncDate.toLocaleDateString('ar-IQ')} ${syncDate.toLocaleTimeString('ar-IQ')}`;
+        }
+    } catch (e) { /* تجاهل */ }
+}
+
+// ===== تحقق من الجلسة عند التحميل =====
+window.addEventListener('load', () => {
+    // قراءة كود المدرسة من URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const schoolParam = urlParams.get('school');
+    if (schoolParam) {
+        document.getElementById('schoolCode').value = schoolParam;
+    }
+
+    // تحقق من جلسة محفوظة
+    const session = sessionStorage.getItem('founders_session');
+    if (session) {
+        try {
+            const s = JSON.parse(session);
+            // انتهاء الجلسة بعد 4 ساعات
+            if (Date.now() - s.loginAt < 4 * 60 * 60 * 1000) {
+                currentSchoolCode = s.schoolCode;
+                currentSchoolName = s.schoolName;
+                showApp();
+                return;
+            }
+        } catch (e) { /* تجاهل */ }
+        sessionStorage.removeItem('founders_session');
+    }
+});
+
+// Enter key for login
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && document.getElementById('loginPage').style.display !== 'none') {
+        doLogin();
+    }
+});
+</script>
+</body>
+</html>
