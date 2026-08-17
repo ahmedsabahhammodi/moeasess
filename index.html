@@ -576,10 +576,28 @@ function formatNumber(n) {
     return Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }
 
+function parseUtcDate(d) {
+    if (!d) return null;
+    if (d instanceof Date) return d;
+    let s = String(d).trim();
+    if (!s.endsWith('Z') && !s.includes('+') && !s.includes('GMT')) {
+        s = s.replace(' ', 'T') + 'Z';
+    }
+    const parsed = new Date(s);
+    return isNaN(parsed.getTime()) ? new Date(d) : parsed;
+}
+
 function formatDate(d) {
     if (!d) return '-';
-    const date = new Date(d);
+    const date = parseUtcDate(d);
     return date.toLocaleDateString('ar-IQ', { year: 'numeric', month: '2-digit', day: '2-digit' });
+}
+
+function formatDateTime(d) {
+    if (!d) return '-';
+    const date = parseUtcDate(d);
+    return date.toLocaleDateString('ar-IQ', { year: 'numeric', month: '2-digit', day: '2-digit' }) + ' ' +
+           date.toLocaleTimeString('ar-IQ', { hour: '2-digit', minute: '2-digit', hour12: true });
 }
 
 async function supabaseQuery(table, params = '') {
@@ -686,12 +704,13 @@ function showApp() {
     document.getElementById('appPage').style.display = 'block';
     document.getElementById('schoolNameBadge').textContent = currentSchoolName;
 
-    // تعبئة قائمة السنوات
+    // تعبئة قائمة السنوات تلقائياً وديناميكياً (السنة الحالية + القادمة + 5 سنوات سابقة)
     const yearSelect = document.getElementById('yearSelect');
     yearSelect.innerHTML = '';
     const currentYear = new Date().getFullYear();
-    for (let y = currentYear; y >= currentYear - 3; y--) {
-        yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+    for (let y = currentYear + 1; y >= currentYear - 5; y--) {
+        const isSelected = (y === currentYear) ? 'selected' : '';
+        yearSelect.innerHTML += `<option value="${y}" ${isSelected}>${y}</option>`;
     }
 
     // تواريخ كشف الصندوق (آخر 30 يوم)
@@ -996,9 +1015,8 @@ async function loadSyncInfo() {
             `school_code=eq.${encodeURIComponent(currentSchoolCode)}`
         );
         if (schools.length > 0 && schools[0].last_sync_at) {
-            const syncDate = new Date(schools[0].last_sync_at);
             document.getElementById('syncInfo').textContent =
-                `آخر تحديث للبيانات: ${syncDate.toLocaleDateString('ar-IQ')} ${syncDate.toLocaleTimeString('ar-IQ')}`;
+                `آخر تحديث للبيانات: ${formatDateTime(schools[0].last_sync_at)}`;
         }
     } catch (e) { /* تجاهل */ }
 }
