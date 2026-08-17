@@ -753,11 +753,30 @@ async function loadFinancialData() {
             supabaseQuery('students', `school_code=eq.${sc}&select=local_id`)
         ]);
 
-        // حساب الإحصائيات
+        // 1. ربط وحساب المدفوع الفعلي لكل خطة دفع من مجموع الأقساط (كاملة أو جزئية)
+        const planPaidMap = {};
+        installments.forEach(inst => {
+            const pid = inst.payment_plan_local_id;
+            if (pid) {
+                if (!planPaidMap[pid]) planPaidMap[pid] = 0;
+                planPaidMap[pid] += Number(inst.amount_paid || 0);
+            }
+        });
+
+        // 2. حساب الإحصائيات الإجمالية
         const totalStudents = students.length;
         const totalExpected = plans.reduce((s, p) => s + Number(p.total_amount_due || 0), 0);
-        const totalPaid = plans.reduce((s, p) => s + Number(p.total_paid_so_far || 0), 0);
-        const totalRemaining = totalExpected - totalPaid;
+        
+        let totalPlansPaid = 0;
+        plans.forEach(p => {
+            const actualPaid = (planPaidMap[p.local_id] !== undefined && planPaidMap[p.local_id] > 0) 
+                ? planPaidMap[p.local_id] 
+                : Number(p.total_paid_so_far || 0);
+            totalPlansPaid += actualPaid;
+        });
+
+        const totalPaid = totalPlansPaid;
+        const totalRemaining = Math.max(0, totalExpected - totalPaid);
         const fullyPaid = plans.filter(p => p.status === 'fully_paid').length;
         const activePlans = plans.filter(p => ['active', 'overdue_installments'].includes(p.status)).length;
         const withdrawn = plans.filter(p => p.is_withdrawn).length;
@@ -874,7 +893,10 @@ async function loadFinancialData() {
             if (!statusGroups[key]) statusGroups[key] = { count: 0, due: 0, paid: 0 };
             statusGroups[key].count++;
             statusGroups[key].due += Number(p.total_amount_due || 0);
-            statusGroups[key].paid += Number(p.total_paid_so_far || 0);
+            const actualPaid = (planPaidMap[p.local_id] !== undefined && planPaidMap[p.local_id] > 0) 
+                ? planPaidMap[p.local_id] 
+                : Number(p.total_paid_so_far || 0);
+            statusGroups[key].paid += actualPaid;
         });
 
         const plansBody = document.querySelector('#plansTable tbody');
